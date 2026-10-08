@@ -20,13 +20,13 @@ W_IP_LINK = 3
 
 W_KEYWORD = 1
 
-scores = {}
-verdicts = []
 
 KEYWORDS = ["urgent", "verify", "suspended", "password", "expires", "act now",
             "congratulations", "winner", "claim", "immediately", "gift card"]
 
 def check_mail(folder, flagged=None):
+    scores = {}
+    verdicts = []
 
     if flagged is None:
         flagged = []
