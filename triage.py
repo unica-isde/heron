@@ -79,8 +79,8 @@ def check_mail(folder, flagged=None):
 
         if "spf=fail" in low or "dmarc=fail" in low:
             s = s + W_AUTH_FAIL
-        # reply-to different from from
 
+        # reply-to different from from
         from_domain = sender_domain(frm)
         reply_domain = sender_domain(header(raw, "Reply-To"))
         if from_domain and reply_domain and from_domain != reply_domain:
