@@ -15,7 +15,7 @@ def score_email(raw):
     frm = str(msg.get("From", ""))
     reply_to = str(msg.get("Reply-To", ""))
     score = (keyword_score(raw) + link_score(raw) + brand_score(frm) +
-             auth_score(raw), reply_to_score(frm, reply_to))
+             auth_score(raw) +  reply_to_score(frm, reply_to))
     return score
 
 
