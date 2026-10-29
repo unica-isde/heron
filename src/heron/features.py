@@ -15,6 +15,9 @@ BRANDS = ["paypal", "microsoft", "amazon"]
 KEYWORDS = ["urgent", "verify", "suspended", "password", "expires", "act now",
             "congratulations", "winner", "claim", "immediately", "gift card"]
 
+_URL_RE = re.compile("https?://[^\\s\"'<>]+")
+_IP_URL_RE = re.compile("https?://[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+")
+
 
 def keyword_score(raw):
     """Assign one point for each keyword found in the email."""
@@ -26,9 +29,9 @@ def link_score(raw):
     """Assign points for links to IP addresses or punycode domain."""
     # links that look bad
     s = 0
-    urls = re.findall("https?://[^\\s\"'<>]+", raw)
+    urls = re.findall(_URL_RE, raw)
     for u in urls:
-        if re.match("https?://[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+", u):
+        if re.match(_IP_URL_RE, u):
             s = s + W_IP_LINK  # ip address url, very bad
         if "xn--" in u:  # punycode
             s = s + W_PUNYCODE_LINK
