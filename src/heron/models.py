@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from enum import StrEnum
 
 
 @dataclass(frozen=True)
@@ -11,3 +12,18 @@ class ParsedEmail:
     auth_results: str
     text: str
     links: tuple[str]
+
+
+@dataclass(frozen=True)
+class TriageResult:
+    """The outcome of one email message, composed of id, score and verdict."""
+    email_id: str
+    score: int
+    verdict: "Verdict"
+
+
+class Verdict(StrEnum):
+    """Outcome verdict of the triage."""
+    BENIGN = "benign"
+    SUSPICIOUS = "suspicious"
+    PHISHING = "phishing"
