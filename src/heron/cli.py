@@ -19,19 +19,9 @@ def build_parser() -> argparse.ArgumentParser:
     argparse.ArgumentParser
         The parser of the CLI arguments.
     """
-    parser = argparse.ArgumentParser(
-        prog="heron",
-        description="Triage of phishing emails."
-    )
-    parser.add_argument(
-        "folder",
-        help="a folder containing `.eml` files"
-    )
-    parser.add_argument(
-        "--json",
-        action="store_true",
-        help="machine-readable output"
-    )
+    parser = argparse.ArgumentParser(prog="heron", description="Triage of phishing emails.")
+    parser.add_argument("folder", help="a folder containing `.eml` files")
+    parser.add_argument("--json", action="store_true", help="machine-readable output")
     return parser
 
 
