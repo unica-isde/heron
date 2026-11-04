@@ -1,14 +1,14 @@
 """Command-line interface: `python -m heron <folder>`"""
 
 import argparse
-import os
 import json
+import os
 import sys
 from dataclasses import asdict
 
-from heron.scorer import triage
-from heron.parser import parse_eml
 from heron.models import TriageResult
+from heron.parser import parse_eml
+from heron.scorer import triage
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -58,7 +58,7 @@ def report(verdicts: list[TriageResult]) -> None:
         print(f"{v.email_id:<28} {v.verdict} score={v.score}")
 
 
-def main(argv: list[str] | None = None):
+def main(argv: list[str] | None = None) -> None:
     """Entry point of the CLI.
 
     Parameters
