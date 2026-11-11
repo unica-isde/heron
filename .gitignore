@@ -14,3 +14,7 @@ docs/_build/
 .env
 
 .idea/
+
+.hypothesis/
+
+mutants/
