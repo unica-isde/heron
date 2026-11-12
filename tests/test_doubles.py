@@ -1,6 +1,6 @@
 import pytest
 
-from heron import scorer
+from heron import features, scorer
 from heron.models import Finding, ParsedEmail, Verdict
 from tests.helpers import make_email
 
@@ -11,9 +11,20 @@ def always_flag(email: ParsedEmail) -> list[Finding]:
 
 
 def test_monkeypatch_replaces_the_checks(monkeypatch: pytest.MonkeyPatch) -> None:
+    # scorer.py imported ALL_CHECKS by name: patch it where it is used
     monkeypatch.setattr(scorer, "ALL_CHECKS", (always_flag,))
 
     result = scorer.triage(make_email())
 
     assert result.verdict == Verdict.PHISHING
     assert [f.code for f in result.findings] == ["stub"]
+
+
+def test_patching_where_defined_changes_nothing(monkeypatch: pytest.MonkeyPatch) -> None:
+    # features.ALL_CHECKS is a different name for the same tuple: scorer keeps its own
+    monkeypatch.setattr(features, "ALL_CHECKS", (always_flag,))
+
+    result = scorer.triage(make_email())
+
+    assert result.verdict == Verdict.BENIGN
+    assert result.findings == ()

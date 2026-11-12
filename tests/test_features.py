@@ -1,8 +1,12 @@
 import pytest
 
 from heron.features import (
+    W_AUTH_FAIL,
+    W_BRAND_MISMATCH,
     W_REPLY_TO_MISMATCH,
     W_URGENCY,
+    check_auth,
+    check_brand,
     check_links,
     check_reply_to,
     check_urgency,
@@ -48,3 +52,29 @@ def test_reply_to_is_silent_when_a_domain_is_missing() -> None:
 )
 def test_check_links(links: tuple[str, ...], codes: list[str]) -> None:
     assert [f.code for f in check_links(make_email(links=links))] == codes
+
+
+def test_brand_fires_when_the_sender_claims_a_brand_it_does_not_send_from() -> None:
+    email = make_email(sender="PayPal Support <security@paypa1-secure.net>")
+    assert [(f.code, f.detail, f.weight) for f in check_brand(email)] == [
+        ("brand_mismatch", "paypal", W_BRAND_MISMATCH)
+    ]
+
+
+def test_brand_is_silent_for_the_real_domain() -> None:
+    assert check_brand(make_email(sender="PayPal <service@paypal.com>")) == []
+
+
+def test_brand_gives_one_finding_per_claimed_brand() -> None:
+    email = make_email(sender="Amazon and Microsoft deals <deals@shop.example>")
+    assert [f.detail for f in check_brand(email)] == ["microsoft", "amazon"]
+
+
+@pytest.mark.parametrize(
+    ("auth_results", "fires"),
+    [("spf=fail; dmarc=pass", True), ("spf=pass; dmarc=pass", False), ("spf=softfail", False)],
+    ids=["spf-fail", "all-pass", "softfail-is-not-fail"],
+)
+def test_check_auth(auth_results: str, fires: bool) -> None:
+    findings = check_auth(make_email(auth_results=auth_results))
+    assert [(f.code, f.weight) for f in findings] == ([("auth_fail", W_AUTH_FAIL)] if fires else [])
