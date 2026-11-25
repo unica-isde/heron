@@ -78,10 +78,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write
+      packages: write  # push to ghcr.io
     steps:
       - uses: actions/checkout@v7
-      - name: Image name in lower case
+      - name: Image name in lower case (registry names must be lower case)
         run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
       - id: meta
         uses: docker/metadata-action@v6
